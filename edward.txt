@@ -1,0 +1,84 @@
+
+步驟 1: 初始化 MCP 環境
+# dolphin-mcp\MCP\weather 這個資料夾是我從 claude 的 MCP 範例依照下面這篇文件做出來的
+https://modelcontextprotocol.io/quickstart/server
+
+需要依照不同環境, uv 參數,詳情點上面連結 Set up your environment 選擇對應版本完成初始化操作
+
+
+
+
+
+步驟 2: 初始化 dolphin-mcp
+# 原始來源
+https://github.com/cognitivecomputations/dolphin-mcp.git
+
+# 先依照 Readme 文件中的 [關鍵字]Setting up Prerequisites 依照平台安裝 python,sqlite,uv/uvx
+# Configuration 中的 .env 如果不用 OPenAI 不用設定
+
+
+步驟 3: 初始化 dolphin-mcp
+# mcp_config.json
+  這個檔案是 mcp 的設定檔案,必須依照檔案路徑設定好,
+
+
+    # 下面可以解釋成,到指定 ./MCP/weather 的目錄下執行 weather.py
+
+    "weather": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./MCP/weather",
+        "run",
+        "weather.py"
+      ]
+    },
+    "send": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./MCP/weather",
+        "run",
+        "send.py"
+      ]
+    },
+
+
+步驟 3: 記得 ollama pull llama3.1 模型可以看 mcp_config.json,透過 title 選模型,然後我這邊使用了 llama3.1
+
+    {
+      "title": "llama",
+      "provider": "ollama",
+      "model": "llama3.1"
+    },
+
+步驟 4: 運行 dolphin-mcp
+python dolphin_mcp.py --model llama "查詢後發送布魯克林的天氣 用英文發送 將查到的訊息完整的直接用 sms 發送" --log-messages log.txt
+
+
+步驟 5: 運行後可以看到 MCP Server 有沒有正常掛載 ZapierActionsMCP 需要金鑰,沒付錢,所以沒有成功
+
+(base) PS C:\Users\edward\Documents\ai\dolphin-mcp> python dolphin_mcp.py --model llama "發送 1234" --log-messages log.txt
+C:\Users\edward\Documents\ai\dolphin-mcp\dolphin_mcp.py:40: DeprecationWarning: There is no current event loop
+  asyncio.get_event_loop().run_until_complete(cli_main())
+[OK] weather
+[WARN] Could not start server ZapierActionsMCP
+[OK] dolphin-demo-database-sqlite
+
+
+# 這邊我改了一下讓他有記憶功能 具體細節可以搜尋關鍵字  "如果使用 log 參數時,紀錄操作紀錄,每次呼叫時讀取"
+
+讀取 JSON 檔案失敗：Expecting value: line 1 column 1 (char 0)
+
+View result from send_message from weather {"message": "1234"}
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\u2705 Message sent successfully (Status code: 204)"
+    }
+  ],
+  "isError": false
+}
+
+您的訊息已成功發送。狀態碼為 204。
