@@ -1,5 +1,27 @@
 {
   "mcpServers": {
+
+    "weather": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./MCP/weather",
+        "run",
+        "weather.py"
+      ]
+    },
+    "send": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "./MCP/weather",
+        "run",
+        "send.py"
+      ]
+    },
+    "ZapierActionsMCP": {
+      "url": "https://actions.zapier.com/mcp/sk-ak-xxxxxxxxxxxxxxxxxxxxxxxxxx/sse"
+    },
     "dolphin-demo-database-sqlite": {
       "command": "uvx",
       "args": [
@@ -7,10 +29,8 @@
         "--db-path",
         "~/.dolphin/dolphin.db"
       ]
-    },
-    "ZapierActionsMCP": {
-      "url": "https://actions.zapier.com/mcp/sk-ak-xxxxxxxxxxxxxxxxxxxxxxxxxx/sse"
-    }
+    } 
+
   },
   "models": [
     {

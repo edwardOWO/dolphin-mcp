@@ -579,6 +579,31 @@ async def run_interaction(
 
     conversation = []
 
+   
+    # 如果使用 log 參數時,紀錄操作紀錄,每次呼叫時讀取
+    if os.path.exists(log_messages_path):
+        try:
+            if os.path.exists(log_messages_path):
+                with open(log_messages_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)  # 讀取 JSON 檔案
+                    
+                # 確保 "messages" 存在於 JSON
+                if "messages" in data:
+                    for msg in data["messages"]:  # 逐筆加入 conversation
+                        if isinstance(msg, dict):
+                            conversation.append(msg)  # **完整保留所有欄位**
+                        else:
+                            print(f"跳過無效訊息: {msg}")  # 避免格式錯誤
+
+                else:
+                    print("JSON 格式錯誤：找不到 'messages' 欄位")
+
+        except Exception as e:
+            print(f"讀取 JSON 檔案失敗：{e}")
+   
+    # loadMemorry
+
+
     # 4) Build conversation
     # Get system message - either from systemMessageFile, systemMessage, or default
     system_msg = "You are a helpful assistant."
@@ -606,6 +631,11 @@ async def run_interaction(
     async def cleanup():
         """Clean up servers and log messages"""
         if log_messages_path:
+
+            # 刪除前一次的操作紀錄
+            if os.path.exists(log_messages_path):
+                os.remove(log_messages_path)
+            # 儲存最新的操作紀錄
             await log_messages_to_file(conversation, all_functions, log_messages_path)
         for cli in servers.values():
             await cli.stop()
